@@ -1,0 +1,10 @@
+.sideBar {
+    height: 100vh;
+    width: 20%;
+    z-index: 33333;
+    position: absolute;
+    right: -10%;
+    transition: right 1s ease;
+}
+
+
