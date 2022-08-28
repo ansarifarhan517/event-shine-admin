@@ -4,7 +4,7 @@ import fire, { db, auth } from "../../firebaseConfig/firebaseConfig";
 const dataTableSlice = createSlice({
     name: 'dataTableState',
     initialState: {
-        dataTableData: [],
+        dataTableData: {},
         searchedService: '',
     },
     reducers: {
@@ -26,17 +26,38 @@ export const getDataTableData = (serviceName) => {
             let dataTableData = []
             const response = await db.collection(serviceName).get()
             response.forEach(i => dataTableData.push(i.data()))
-            console.log(dataTableData)
-            let data = []
+            let dataTableDatas = {
+                pending: [],
+                accepted: [],
+                rejected: []
+            }
+
             dataTableData.map(i => {
                 let obj = {}
-                obj.City = i.City
-                obj.Address = i.Address
-                obj.Title = i.Title
-                obj.Active = i.Active
-                data.push(obj)
+                obj.City = i.City == 'Xtz2LLmd8w9QMOOHcM9C' ? 'Mumbai' : i.City == 'Amvl3PCMbn4wSjiEcxNT' ? 'Thane' : i.City == '8NmEc5YN82ShZw47NPCy' ? 'Thane' : ''
+                obj.Address     = i.Address
+                obj.Title       = i.Title
+                obj.Active      = i.Active
+                obj.Contact     = i.Contact
+                obj.HostName    = i.HostName
+                obj.MaxCapacity = i.MaxCapacity
+                obj.MinCapacity = i.MinCapacity
+                obj.Overview    = i.Overview
+                obj.About       = i.About
+                obj.VenueImages = i.VenueImages
+                obj.ID          = i.ID
+                if (i.Active === 'Y') {
+                    dataTableDatas.accepted.push(obj)
+                }
+                else if (i.Active === 'N') {
+                    dataTableDatas.pending.push(obj)
+                }
+                else if(i.Active === 'R'){
+                    dataTableDatas.rejected.push(obj)
+                }
             })
-            dispatch(dataTableSlice.actions.setDataTableData(data))
+            console.log(dataTableDatas)
+            dispatch(dataTableSlice.actions.setDataTableData(dataTableDatas))
         }
         catch (error) {
             console.log(error)
