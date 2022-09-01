@@ -62,7 +62,7 @@ const MainContent = (props) => {
         {/* begin::Header */}
         <div className='card-header border-0 pt-5'>
           <h3 className='card-title align-items-start flex-column'>
-            <span className='card-label fw-bolder fs-1 mb-1'>{searchedService == '' ? 'Venues' : searchedService}</span>
+            <span className='card-label fw-light fs-2 mb-1'>{searchedService == '' ? 'Venues' : searchedService}</span>
           </h3>
           <div className='card-toolbar'>
             <ul className='nav'>
