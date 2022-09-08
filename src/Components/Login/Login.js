@@ -10,11 +10,8 @@ import { faEyeSlash, faEye } from '@fortawesome/free-regular-svg-icons'
 
 const Login = () => {
 
-
-
     const dispatch = useDispatch()
     const showPassword = useSelector(state => state.loginReducer.showPassword)
-
     const LoginValidation = (values) => {
         const { Email, Password } = values;
         console.log(values)
@@ -56,7 +53,7 @@ const Login = () => {
                         <div style={{ marginTop: '30%' }}>
 
                             <h6 className='mt-6 mb-6 fs-4'>
-                                Welcome to <b className='text-warning'></b>
+                                Welcome to <b className='text-warning'>Event Shine </b>
                             </h6>
                             <h2 className='mb-5'>
                                 <b>Hey, <br /> Login Now.</b>
