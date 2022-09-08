@@ -1,4 +1,4 @@
-import fire, { auth, db } from "../firebaseConfig/firebaseConfig";
+import fire, { auth, db, storage } from "../firebaseConfig/firebaseConfig";
 
 export const setServiceAcceptOrReject = async (status, serviceID, serviceName) => {
     try {
@@ -7,5 +7,27 @@ export const setServiceAcceptOrReject = async (status, serviceID, serviceName) =
         return true
     } catch (error) {
         console.log(error)
+    }
+}
+
+export const GetImage = async (path) => {
+    try {
+        const storageRef = storage.ref();
+        let starsRef = storageRef.child(path);
+        return await starsRef.getDownloadURL()
+    } catch (error) {
+        return "ImageNotFound"
+    }
+}
+
+
+export const getUserDataByID = async (id) => {
+    try {
+        let userData = false;
+        const response = await db.collection('Users').doc(id).get();
+        userData = { ...response.data(), ID: response.id }
+        return userData
+    } catch (err) {
+        console.log(err);
     }
 }

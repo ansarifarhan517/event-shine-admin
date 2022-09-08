@@ -1,0 +1,48 @@
+.mainContainer {
+    margin-top: 42.5px;
+    height: calc(100% - 42.5px);
+
+}
+
+.w-74 {
+    width: 74%;
+}
+
+
+@media (min-width:375px) {
+    .w-m-77 {
+        width: 77%;
+    }
+}
+
+
+@media (min-width:768px) {
+    .mainContainer {
+        margin-top: 45.88px;
+        height: calc(100% - 45.88px);
+    }
+
+    .w-md-90 {
+        width: 96%;
+    }
+}
+
+@media (min-width:1024px) {
+    .mainContainer {
+        margin-top: 51.38px;
+        height: calc(100% - 51.38px);
+
+    }
+}
+
+@media (min-width:1440px) {
+    .w-xl-92 {
+        width: 92%;
+    }
+}
+
+@media (min-width:1920px) {
+    .w-xxl-93 {
+        width: 93%;
+    }
+}

@@ -4,12 +4,17 @@ import fire, { db, auth } from "../../firebaseConfig/firebaseConfig";
 const sideBarSlice = createSlice({
     name: 'sideBarState',
     initialState: {
-        selectedServiceID: null
+        selectedData: {},
+        sideBarLoader: false
     },
     reducers: {
-        setSelectedServiceID(state, action) {
-            state.selectedServiceID = action.payload
+        setSelectedData(state, action) {
+            state.selectedData = action.payload
+        },
+        setSideBarLoader(state) {
+            state.sideBarLoader = !state.sideBarLoader
         }
+
     }
 })
 

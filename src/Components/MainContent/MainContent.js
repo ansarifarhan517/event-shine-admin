@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getDataTableData } from '../../Store/datatableSlice/datatableSlice'
-import { setServiceAcceptOrReject } from '../../Store/storeHelper'
+import { GetImage, setServiceAcceptOrReject } from '../../Store/storeHelper'
 import './MainContent.css'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { sideBarActions } from '../../Store/sideBarSlice/sideBarSlice'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 const MainContent = (props) => {
   const dispatch = useDispatch()
   const dataTableData = useSelector(state => state.dataTableReducer.dataTableData)
@@ -14,7 +16,6 @@ const MainContent = (props) => {
   const MySwal = withReactContent(Swal)
 
   const serviceAcceptAndRejectHandler = (e) => {
-
     MySwal.fire({
       title: "Are you sure?",
       text: "You wont be able to revert this!",
@@ -38,12 +39,41 @@ const MainContent = (props) => {
       }
     })
   }
-  const openDetailServicePage = (e) => {
-    console.log(e.target.dataset.serviceid)
-    dispatch(sideBarActions.setSelectedServiceID(e.target.dataset.serviceid))
-    console.log(props.sideBarRef.current)
-    props.sideBarRef.current.style.right = '0%'
+  const openDetailServicePage = async (e) => {
+    try {
+      dispatch(sideBarActions.setSideBarLoader())
+      let serviceName = searchedService == '' ? 'Venues' : searchedService
+      let selectedData = {}, Images = []
+      props.sideBarRef.current.style.right = '0%'
+
+      Object.keys(dataTableData).map(key => {
+        return dataTableData[key].map(element => {
+          if (element.ID == e.target.dataset.serviceid) {
+            selectedData = element
+          }
+        })
+      })
+
+      if (selectedData.Images && selectedData.Images.length > 0) {
+        for (const imageName of selectedData.Images) {
+          if (serviceName != 'Venues' && serviceName != 'Photographer') {
+            serviceName = serviceName.substring(0, serviceName.length - 1)
+          }
+          const imageUrl = await GetImage(`${serviceName.toLowerCase()}-images/${imageName}`);
+          Images.push(imageUrl)
+        }
+      }
+      selectedData = { ...selectedData, ImagesURL: Images }
+      dispatch(sideBarActions.setSelectedData(selectedData))
+
+
+    } catch (error) {
+      console.log(error)
+    }
+
   }
+
+
 
 
   useEffect(() => {
@@ -55,14 +85,13 @@ const MainContent = (props) => {
   }, [searchedService])
 
 
-
   return (
     <div className='mainContent'>
-      <div className={`card m-2 shadow-lg`}>
+      <div className={`card m-2 shadow-lg `}>
         {/* begin::Header */}
         <div className='card-header border-0 pt-5'>
           <h3 className='card-title align-items-start flex-column'>
-            <span className='card-label fw-light fs-2 mb-1'>{searchedService == '' ? 'Venues' : searchedService}</span>
+            <span className='fw-light fs-1 text-hover-primary '>{searchedService == '' ? 'Venues' : searchedService}</span>
           </h3>
           <div className='card-toolbar'>
             <ul className='nav'>
@@ -100,7 +129,7 @@ const MainContent = (props) => {
         {/* end::Header */}
 
         {/* begin::Body */}
-        <div className='card-body py-3'>
+        <div className=' card-body py-3'>
           <div className='tab-content'>
             {/* begin::Tap pane pending starts */}
             <div className='tab-pane fade show active' id='pending'>
@@ -120,25 +149,31 @@ const MainContent = (props) => {
                   </thead>
                   {/* end::Table head */}
                   {/* begin:: pending Table body starts */}
-                  <tbody>
+                  <tbody className=''>
                     {
-                      Object.keys(dataTableData).length > 0 && dataTableData.pending.map((element, index) => {
+                      Object.keys(dataTableData).length > 0 && dataTableData.pending.length > 0? dataTableData.pending.map((element, index) => {
                         return (
                           <tr key={element.ID} >
                             <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
-                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6' data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
+                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer' data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
                             <td className='text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Address}</td>
                             <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.City}</td>
                             <td >
                               <div className="d-flex justify-content-center align-items-center">
-                                <button type="button" className="btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler}><i className="fa fa-check ps-1"></i></button>
-                                <button type="button" className="ms-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><i className="fa fa-times ps-1"></i></button>
+                                <button type="button" className="btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler}><FontAwesomeIcon icon={faCheck}></FontAwesomeIcon></button>
+                                <button type="button" className="mx-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon className="" icon={faTimes} /></button>
                               </div>
                             </td>
 
                           </tr>
                         )
-                      })
+                      }) :
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td className='text-dark fw-bolder text-hover-primary text-center fs-4'>*****No Records Found*****</td>
+
+                        </tr>
                     }
 
                   </tbody>
@@ -170,23 +205,29 @@ const MainContent = (props) => {
                   {/* begin::Table body */}
                   <tbody>
                     {
-                      Object.keys(dataTableData).length > 0 &&
-                      dataTableData.accepted.map((element, index) => {
-                        return (
-                          <tr key={index}>
-                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
-                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'
-                            data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
-                            <td className='text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Address}</td>
-                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.City}</td>
-                            <td>
-                              <div className="d-flex justify-content-center align-items-center">
-                                <button type="button" className="ms-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><i className="fa fa-times ps-1"></i></button>
-                              </div>
-                            </td>
-                          </tr>
-                        )
-                      })
+                      Object.keys(dataTableData).length > 0 && dataTableData.accepted.length > 0 ?
+                        dataTableData.accepted.map((element, index) => {
+                          return (
+                            <tr key={index}>
+                              <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
+                              <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
+                                data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
+                              <td className='text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Address}</td>
+                              <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.City}</td>
+                              <td>
+                                <div className="d-flex justify-content-center align-items-center">
+                                  <button type="button" className="ms-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></button>
+                                </div>
+                              </td>
+                            </tr>
+                          )
+                        }) :
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td className='text-dark fw-bolder text-hover-primary text-center fs-4'>*****No Records Found*****</td>
+
+                        </tr>
                     }
                   </tbody>
                   {/* end::Table body */}
@@ -220,23 +261,29 @@ const MainContent = (props) => {
                   {/* begin::Table body */}
                   <tbody>
 
-                    {Object.keys(dataTableData).length > 0 &&
+                    {Object.keys(dataTableData).length > 0 && dataTableData.rejected.length > 0 ?
                       dataTableData.rejected.map((element, index) => {
                         return (
                           <tr key={index}>
                             <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
-                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'
-                            data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
+                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
+                              data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
                             <td className='text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Address}</td>
                             <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.City}</td>
                             <td>
                               <div className="d-flex justify-content-center align-items-center">
-                                <button type="button" className="ms-2 btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><i className="fa fa-times ps-1"></i></button>
+                                <button type="button" className="ms-2 btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></button>
                               </div>
                             </td>
                           </tr>
                         )
-                      })
+                      }) :
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td className='text-center text-dark fw-bolder text-hover-primary fs-5'>*****No Records Found*****</td>
+
+                      </tr>
                     }
 
                   </tbody>
@@ -251,7 +298,7 @@ const MainContent = (props) => {
           </div>
         </div>
         {/* end::Tables*/}
-      </div>
+      </div >
     </div>
 
   )

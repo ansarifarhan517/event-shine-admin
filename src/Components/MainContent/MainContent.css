@@ -1,4 +1,25 @@
 .mainContent{
-    height: calc(100% - 40px);
     overflow: auto;
+}
+
+
+@media (min-width:768px) {
+    .leftPanel {
+        width: 10%;
+        height:100vh
+    }
+}
+
+@media (min-width:1024px) {
+    .sideBar {
+        right: -80%;
+        width: 70%;
+    }
+}
+
+@media (min-width:1440px) {
+    .sideBar {
+        right: -70%;
+        width: 60%;
+    }
 }

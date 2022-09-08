@@ -1,0 +1,71 @@
+.leftPanel {
+    width: 26%;
+    height: 100vh;
+    background-color: #f5c433;
+}
+
+.menu-item.clicked {
+    background-color: #edcf75;
+    color: white;
+    box-shadow: 0 1rem 3rem rgba(black, .175);
+    border-radius: 20px;
+}
+
+.menu-item:hover {
+    background-color: #edcf75;
+    color: white;
+    box-shadow: 0 1rem 3rem rgba(black, .175);
+    border-radius: 10px;
+
+}
+
+@media (min-width:375px) {
+    .leftPanel {
+        width: 23%;
+    }
+}
+
+@media (min-width:768px) {
+    .leftPanel {
+        width: 14%;
+
+    }
+
+    .menu-item.clicked {
+        background-color: #edcf75;
+        color: white;
+        transform: scale(1.1);
+        box-shadow: 0 1rem 3rem rgba(black, .175);
+        border-radius: 10px;
+    }
+
+    .menu-item:hover {
+        background-color: #edcf75;
+        color: white;
+        transform: scale(1.2);
+        box-shadow: 0 1rem 3rem rgba(black, .175);
+        border-radius: 10px;
+
+    }
+}
+
+
+@media (min-width:1024px) {
+    .leftPanel {
+        width: 10%;
+
+    }
+}
+
+@media (min-width:1440px) {
+    .leftPanel {
+        width: 8%;
+
+    }
+}
+
+@media (min-width:1920px) {
+    .leftPanel {
+        width: 7%;
+    }
+}

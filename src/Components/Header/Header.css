@@ -1,0 +1,16 @@
+.customHeader {
+    height: 65px;
+    position: fixed;
+    z-index: 2;
+    /* background-color: #fff; */
+    padding: 0;
+    top: 0;
+    left: 0;
+    width: 100vw
+}
+
+@media (min-width:320px) {
+    .mt-xs-3{
+        margin-top: 2rem;
+    }
+}

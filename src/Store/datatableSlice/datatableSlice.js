@@ -44,7 +44,7 @@ export const getDataTableData = (serviceName) => {
                 obj.MinCapacity = i.MinCapacity
                 obj.Overview    = i.Overview
                 obj.About       = i.About
-                obj.VenueImages = i.VenueImages
+                obj.Images = i.Images
                 obj.ID          = i.ID
                 if (i.Active === 'Y') {
                     dataTableDatas.accepted.push(obj)
@@ -56,7 +56,6 @@ export const getDataTableData = (serviceName) => {
                     dataTableDatas.rejected.push(obj)
                 }
             })
-            console.log(dataTableDatas)
             dispatch(dataTableSlice.actions.setDataTableData(dataTableDatas))
         }
         catch (error) {
