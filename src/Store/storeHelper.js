@@ -2,6 +2,7 @@ import fire, { auth, db, storage } from "../firebaseConfig/firebaseConfig";
 
 export const setServiceAcceptOrReject = async (status, serviceID, serviceName) => {
     try {
+        console.log(status,serviceID,serviceName)
         status = status == 'accept' ? 'Y' : 'R'
         await db.collection(serviceName).doc(serviceID).update({ Active: status });
         return true

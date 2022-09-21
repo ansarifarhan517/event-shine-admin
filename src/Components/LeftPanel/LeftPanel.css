@@ -1,21 +1,37 @@
+.text-blue {
+    color: #243A73
+}
+.iconColor{
+    color: #0F3460;
+}
+
 .leftPanel {
     width: 26%;
     height: 100vh;
-    background-color: #f5c433;
+    /* background-color: #f5c433; */
+    background-color: #FAF5E4;
 }
 
 .menu-item.clicked {
-    background-color: #edcf75;
-    color: white;
+    background-color:  #FF6363;
+    color: #FAF5E4 !important;
     box-shadow: 0 1rem 3rem rgba(black, .175);
-    border-radius: 20px;
+    /* border-radius: 20px; */
+}
+
+.menu-item.clicked .menu-title {
+    color: #FAF5E4 !important;
+
+}
+.menu-item.clicked .iconColor{
+    color: #4C0033;
 }
 
 .menu-item:hover {
-    background-color: #edcf75;
-    color: white;
+    background-color: #FF6363;
+    color: #FAF5E4;
     box-shadow: 0 1rem 3rem rgba(black, .175);
-    border-radius: 10px;
+    /* border-radius: 10px; */
 
 }
 
@@ -32,19 +48,19 @@
     }
 
     .menu-item.clicked {
-        background-color: #edcf75;
+        background-color: #FF6363;
         color: white;
-        transform: scale(1.1);
+        /* transform: scale(1.1); */
         box-shadow: 0 1rem 3rem rgba(black, .175);
-        border-radius: 10px;
+        /* border-radius: 10px; */
     }
 
     .menu-item:hover {
-        background-color: #edcf75;
+        background-color: #FF6363;
         color: white;
-        transform: scale(1.2);
+        /* transform: scale(1.2); */
         box-shadow: 0 1rem 3rem rgba(black, .175);
-        border-radius: 10px;
+        /* border-radius: 10px; */
 
     }
 }
@@ -52,7 +68,7 @@
 
 @media (min-width:1024px) {
     .leftPanel {
-        width: 10%;
+        width: 20%;
 
     }
 }

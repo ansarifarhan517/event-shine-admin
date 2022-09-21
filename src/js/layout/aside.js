@@ -1,4 +1,4 @@
-
+"use strict";
 
 // Class definition
 var KTLayoutAside = function () {
@@ -30,6 +30,8 @@ var KTLayoutAside = function () {
             if (!aside || !toggle) {
                 return;
             }
+    console.log('hii')
+
 
             handleToggle();
         }

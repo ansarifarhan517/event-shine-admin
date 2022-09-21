@@ -10,7 +10,7 @@ const Header = () => {
     const dispatch = useDispatch()
 
     return (
-        <nav className="navbar navbar-expand-lg bg-light fixed-top ">
+        <nav className="navbar navbar-expand-lg fixed-top " style={{backgroundColor:'#125B50'}}>
             <div className="container-fluid">
                  <Link to={'/'}>
                      <img alt="Logo" src={Logo} className="h-30px logo navbar-brand cursor-pointer" />

@@ -32,16 +32,21 @@ export const postLogin = (params) => {
             console.log(authState)
             let userData = await getUserDataByID(authState.user.uid);
             console.log(userData)
-            if (userData) {
+            if (userData.Usertype == 'Admin') {
+                // if (userData) {
+
                 dispatch(authSlice.actions.setUserData(userData));
                 localStorage.setItem('auth', JSON.stringify(userData))
+                // }
             }
             else {
                 localStorage.removeItem('auth')
+                throw { code: 'not authorize' }
             }
 
 
         } catch (err) {
+            console.log(err)
             switch (err.code) {
                 case "auth/invalid-email":
                 case "auth/user-not-found":
@@ -56,6 +61,13 @@ export const postLogin = (params) => {
                         icon: 'error',
                         title: 'Invalid Password',
                         text: 'Check your password!',
+                    })
+                    break;
+                case 'not authorize':
+                    swal.fire({
+                        icon: 'error',
+                        title: 'Un Authorized User',
+                        text: 'you dont have privilege',
                     })
                     break;
                 default: {

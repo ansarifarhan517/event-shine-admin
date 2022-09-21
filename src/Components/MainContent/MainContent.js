@@ -26,6 +26,7 @@ const MainContent = (props) => {
 
       if (result.value) {
         let serviceName = searchedService == '' ? 'Venues' : searchedService
+
         const response = await setServiceAcceptOrReject(e.target.value, e.target.dataset.serviceid, serviceName)
         if (response) {
           MySwal.fire({
@@ -87,7 +88,8 @@ const MainContent = (props) => {
 
   return (
     <div className='mainContent'>
-      <div className={`card m-2 shadow-lg `}>
+      {console.log(searchedService)}
+      <div className={`card m-2 shadow-lg `} style={{ backgroundColor: '#FAF5E4' }}>
         {/* begin::Header */}
         <div className='card-header border-0 pt-5'>
           <h3 className='card-title align-items-start flex-column'>
@@ -140,34 +142,70 @@ const MainContent = (props) => {
                   {/* begin::Table head */}
                   <thead className='text-center'>
                     <tr className="fw-bolder text-muted bg-light" >
-                      <th className="rounded-start ps-2">ID</th>
-                      <th className="">Title</th>
-                      <th className="">Address</th>
-                      <th className="">City</th>
-                      <th className="rounded-end">Action</th>
+                      {
+                        searchedService == '' || searchedService != 'Users' ?
+                          <>
+                            <th className="rounded-start ps-2">ID</th>
+                            <th className="">Title</th>
+                            <th className="">Address</th>
+                            <th className="">City</th>
+                            <th className="rounded-end">Action</th>
+                          </> :
+                          <>
+                            <th className="rounded-start ps-2">ID</th>
+                            <th className="">First Name</th>
+                            <th className="">Last Name</th>
+                            <th className="">Email</th>
+                            <th className="">Type</th>
+                            <th className="rounded-end">Action</th>
+                          </>
+                      }
+
                     </tr>
                   </thead>
                   {/* end::Table head */}
                   {/* begin:: pending Table body starts */}
                   <tbody className=''>
                     {
-                      Object.keys(dataTableData).length > 0 && dataTableData.pending.length > 0? dataTableData.pending.map((element, index) => {
-                        return (
-                          <tr key={element.ID} >
-                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
-                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer' data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
-                            <td className='text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Address}</td>
-                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.City}</td>
-                            <td >
-                              <div className="d-flex justify-content-center align-items-center">
-                                <button type="button" className="btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler}><FontAwesomeIcon icon={faCheck}></FontAwesomeIcon></button>
-                                <button type="button" className="mx-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon className="" icon={faTimes} /></button>
-                              </div>
-                            </td>
+                      Object.keys(dataTableData).length > 0 && dataTableData.pending.length > 0 ?
+                        searchedService == '' ||  searchedService != 'Users' ?
 
-                          </tr>
-                        )
-                      }) :
+                          dataTableData.pending.map((element, index) => {
+                            return (
+                              <tr key={element.ID} >
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer' data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Address}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.City}</td>
+                                <td >
+                                  <div className="d-flex justify-content-center align-items-center">
+                                    <button type="button" className="btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler}><FontAwesomeIcon icon={faCheck}></FontAwesomeIcon></button>
+                                    <button type="button" className="mx-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon className="" icon={faTimes} /></button>
+                                  </div>
+                                </td>
+
+                              </tr>
+                            )
+                          }) :
+                          dataTableData.pending.map((element, index) => {
+                            return (
+                              <tr key={index}>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
+                                  data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Firstname}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Lastname}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Email}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Usertype}</td>
+
+                                <td>
+                                  <div className="d-flex justify-content-center align-items-center">
+                                   <button type="button" className="btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler}><FontAwesomeIcon icon={faCheck}></FontAwesomeIcon></button>
+                                    <button type="button" className="mx-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon className="" icon={faTimes} /></button>
+                                  </div>
+                                </td>
+                              </tr>
+                            )
+                          }) :
                         <tr>
                           <td></td>
                           <td></td>
@@ -193,12 +231,24 @@ const MainContent = (props) => {
                   {/* begin::Table head */}
                   <thead className='text-center'>
                     <tr className="fw-bolder text-muted bg-light">
-                      <th className="ps-2 rounded-start ">ID</th>
-                      <th className="">Title</th>
-                      <th className="">Address</th>
-                      <th className="">City</th>
-                      <th className="">Action</th>
-
+                      {
+                        searchedService == '' ||  searchedService != 'Users' ?
+                          <>
+                            <th className="rounded-start ps-2">ID</th>
+                            <th className="">Title</th>
+                            <th className="">Address</th>
+                            <th className="">City</th>
+                            <th className="rounded-end">Action</th>
+                          </> :
+                          <>
+                            <th className="rounded-start ps-2">ID</th>
+                            <th className="">First Name</th>
+                            <th className="">Last Name</th>
+                            <th className="">Email</th>
+                            <th className="">Type</th>
+                            <th className="rounded-end">Action</th>
+                          </>
+                      }
                     </tr>
                   </thead>
                   {/* end::Table head */}
@@ -206,22 +256,43 @@ const MainContent = (props) => {
                   <tbody>
                     {
                       Object.keys(dataTableData).length > 0 && dataTableData.accepted.length > 0 ?
-                        dataTableData.accepted.map((element, index) => {
-                          return (
-                            <tr key={index}>
-                              <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
-                              <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
-                                data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
-                              <td className='text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Address}</td>
-                              <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.City}</td>
-                              <td>
+                        searchedService && searchedService != 'Users' ?
+
+                          dataTableData.accepted.map((element, index) => {
+                            return (
+                              <tr key={index}>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
+                                  data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Address}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.City}</td>
+                                <td>
+                                  <div className="d-flex justify-content-center align-items-center">
+                                    <button type="button" className="ms-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></button>
+                                  </div>
+                                </td>
+                              </tr>
+                            )
+                          }) :
+                          dataTableData.accepted.map((element, index) => {
+                            return (
+                              <tr key={index}>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
+                                  data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Firstname}</td>
+                                <td className='text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Lastname}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Email}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Usertype}</td>
+
+                                <td>
                                 <div className="d-flex justify-content-center align-items-center">
-                                  <button type="button" className="ms-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></button>
-                                </div>
-                              </td>
-                            </tr>
-                          )
-                        }) :
+                                    <button type="button" className="ms-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></button>
+                                  </div>
+                                </td>
+                              </tr>
+                            )
+                          })
+                        :
                         <tr>
                           <td></td>
                           <td></td>
@@ -248,11 +319,24 @@ const MainContent = (props) => {
                   {/* begin::Table head */}
                   <thead className='text-center'>
                     <tr className="fw-bolder text-muted bg-light">
-                      <th className="ps-2 rounded-start ">ID</th>
-                      <th className="">Title</th>
-                      <th className="">Address</th>
-                      <th className="">City</th>
-                      <th className="">Action</th>
+                      {
+                        searchedService && searchedService != 'Users' ?
+                          <>
+                            <th className="rounded-start ps-2">ID</th>
+                            <th className="">Title</th>
+                            <th className="">Address</th>
+                            <th className="">City</th>
+                            <th className="rounded-end">Action</th>
+                          </> :
+                          <>
+                            <th className="rounded-start ps-2">ID</th>
+                            <th className="">First Name</th>
+                            <th className="">Last Name</th>
+                            <th className="">Email</th>
+                            <th className="">Type</th>
+                            <th className="rounded-end">Action</th>
+                          </>
+                      }
 
 
                     </tr>
@@ -261,29 +345,52 @@ const MainContent = (props) => {
                   {/* begin::Table body */}
                   <tbody>
 
-                    {Object.keys(dataTableData).length > 0 && dataTableData.rejected.length > 0 ?
-                      dataTableData.rejected.map((element, index) => {
-                        return (
-                          <tr key={index}>
-                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
-                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
-                              data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
-                            <td className='text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Address}</td>
-                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.City}</td>
-                            <td>
-                              <div className="d-flex justify-content-center align-items-center">
-                                <button type="button" className="ms-2 btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></button>
-                              </div>
-                            </td>
-                          </tr>
-                        )
-                      }) :
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td className='text-center text-dark fw-bolder text-hover-primary fs-5'>*****No Records Found*****</td>
+                    {
+                      Object.keys(dataTableData).length > 0 && dataTableData.rejected.length > 0 ?
 
-                      </tr>
+                        searchedService && searchedService != 'Users' ?
+
+                          dataTableData.rejected.map((element, index) => {
+                            return (
+                              <tr key={index}>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
+                                  data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
+                                <td className='text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Address}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.City}</td>
+                                <td>
+                                  <div className="d-flex justify-content-center align-items-center">
+                                    <button type="button" className="ms-2 btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faCheck}></FontAwesomeIcon></button>
+                                  </div>
+                                </td>
+                              </tr>
+                            )
+                          }) :
+                          dataTableData.rejected.map((element, index) => {
+                            return (
+                              <tr key={index}>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
+                                  data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Firstname}</td>
+                                <td className='text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Lastname}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Email}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Usertype}</td>
+
+                                <td>
+                                <div className="d-flex justify-content-center align-items-center">
+                                    <button type="button" className="ms-2 btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faCheck}></FontAwesomeIcon></button>
+                                  </div>
+                                </td>
+                              </tr>
+                            )
+                          })
+                        :
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td className='text-center text-dark fw-bolder text-hover-primary fs-5'>*****No Records Found*****</td>
+
+                        </tr>
                     }
 
                   </tbody>
