@@ -79,6 +79,10 @@ const MainContent = (props) => {
 
     } catch (error) {
       console.log(error)
+      Swal.fire({
+        icon : 'error',
+        titleText : 'Something went wrong',
+    });
     }
 
   }
