@@ -19,24 +19,23 @@ const SideBar = (props) => {
     const MySwal = withReactContent(Swal)
     const dispatch = useDispatch()
 
-
     const closeSideBarHandler = () => {
 
         if (window.innerWidth <= '425') {
-            console.log('mobile')
+            //console.log('mobile')
             props.sideBarRef.current.style.right = '-100%'
         }
         else if (window.innerWidth > '425' && window.innerWidth <= '1024') {
-            console.log('tablet')
+            //console.log('tablet')
             props.sideBarRef.current.style.right = '-90%'
 
         }
         else if (window.innerWidth > '1024' && window.innerWidth <= '1440') {
-            console.log('lg-laptop')
+            //console.log('lg-laptop')
             props.sideBarRef.current.style.right = '-80%'
         }
         else if (window.innerWidth > '1440' && window.innerWidth < '2560') {
-            console.log('xl-laptop')
+            //console.log('xl-laptop')
             props.sideBarRef.current.style.right = '-70%'
         }
     }
@@ -66,11 +65,11 @@ const SideBar = (props) => {
     }
     useEffect(() => {
         if (Object.keys(selectedData).length > 0) {
-            console.log('hi')
+            //console.log('hi')
             dispatch(sideBarActions.setSideBarLoader())
         }
     }, [selectedData])
-
+    
     return (
 
         <div className='sideBar h-100' ref={props.sideBarRef} >
@@ -80,7 +79,6 @@ const SideBar = (props) => {
                     <h3 className='card-title fw-bolder text-warning text-gray-700 cursor-pointer btn btn-icon btn-sm btn-active-light-warning mt-3' onClick={closeSideBarHandler}>X</h3>
                 </div>
                 {sideBarLoader ? <Loader /> :
-
                     <div className='card-body overflow-auto'>
                         {Object.keys(selectedData).length > 0 &&
                             <div className=" shadow-lg rounded-2 overflow-auto" key={selectedData.ID}>
@@ -167,7 +165,6 @@ const SideBar = (props) => {
                         }
 
                     </div>
-
                 }
             </div>
         </div >

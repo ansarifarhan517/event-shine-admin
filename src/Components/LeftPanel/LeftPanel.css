@@ -16,7 +16,7 @@
     background-color:  #FF6363;
     color: #FAF5E4 !important;
     box-shadow: 0 1rem 3rem rgba(black, .175);
-    /* border-radius: 20px; */
+    border-radius: 4px;
 }
 
 .menu-item.clicked .menu-title {
@@ -31,9 +31,25 @@
     background-color: #FF6363;
     color: #FAF5E4;
     box-shadow: 0 1rem 3rem rgba(black, .175);
-    /* border-radius: 10px; */
-
+    border-radius: 4px;
 }
+
+.leftPanel  .menu-content.accordion-header .accordion-button{
+    padding: 0.65rem 1rem;
+    border-radius: 5px;
+    background-color: #FAF5E4;
+}
+.leftPanel .menu-content.accordion-header .accordion-button:not(.collapsed){
+   box-shadow: none !important;
+}
+
+.leftPanel  .menu-content.accordion-header {
+    padding: 0px;
+}
+.leftPanel .accordion-body{
+    padding: 0px;
+}
+
 
 @media (min-width:375px) {
     .leftPanel {
@@ -75,7 +91,7 @@
 
 @media (min-width:1440px) {
     .leftPanel {
-        width: 8%;
+        width: 12%;
 
     }
 }

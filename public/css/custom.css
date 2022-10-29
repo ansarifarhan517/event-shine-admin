@@ -1,0 +1,22 @@
+
+.mw-1300px{
+    min-width: 1300px !important;
+}
+
+.custom-shadow{
+    box-shadow: 0px 0px 3px -1px grey !important;
+}
+
+
+.minHeight-40{
+    min-height: 40px !important;
+}
+
+.minHeight-45{
+    min-height: 45px !important;
+}
+
+.minHeight-50{
+    min-height: 50px !important;
+}
+

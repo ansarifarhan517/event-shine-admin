@@ -8,12 +8,20 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { sideBarActions } from '../../Store/sideBarSlice/sideBarSlice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import UserComp from '../UserComp/UserComp'
+
+
 const MainContent = (props) => {
-  const dispatch = useDispatch()
-  const dataTableData = useSelector(state => state.dataTableReducer.dataTableData)
+
+  const dispatch        = useDispatch()
+  
+  const dataTableData   = useSelector(state => state.dataTableReducer.dataTableData)
   const searchedService = useSelector(state => state.dataTableReducer.searchedService)
+  
   const MySwal = withReactContent(Swal)
+
+  const [showUserModal, setShowUserModal] = useState(false);
 
   const serviceAcceptAndRejectHandler = (e) => {
     MySwal.fire({
@@ -40,6 +48,7 @@ const MainContent = (props) => {
       }
     })
   }
+  
   const openDetailServicePage = async (e) => {
     try {
       dispatch(sideBarActions.setSideBarLoader())
@@ -74,8 +83,10 @@ const MainContent = (props) => {
 
   }
 
-
-
+  const userDetailPage = async(e) => {
+    const userDocId =  e.target.dataset.serviceid
+    setShowUserModal(userDocId);
+  }
 
   useEffect(() => {
     if (searchedService === '') {
@@ -85,10 +96,8 @@ const MainContent = (props) => {
     }
   }, [searchedService])
 
-
   return (
     <div className='mainContent'>
-      {console.log(searchedService)}
       <div className={`card m-2 shadow-lg `} style={{ backgroundColor: '#FAF5E4' }}>
         {/* begin::Header */}
         <div className='card-header border-0 pt-5'>
@@ -153,10 +162,11 @@ const MainContent = (props) => {
                           </> :
                           <>
                             <th className="rounded-start ps-2">ID</th>
-                            <th className="">First Name</th>
-                            <th className="">Last Name</th>
+                            <th className="">Hostname</th>
                             <th className="">Email</th>
-                            <th className="">Type</th>
+                            <th className=""> Contact </th>
+                            {/* <th className="">Last Name</th>
+                            <th className="">Type</th> */}
                             <th className="rounded-end">Action</th>
                           </>
                       }
@@ -192,10 +202,12 @@ const MainContent = (props) => {
                               <tr key={index}>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
-                                  data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Firstname}</td>
-                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Lastname}</td>
+                                  data-serviceid={element.ID} onClick={userDetailPage}>{element.Firstname +" "+ element.Lastname}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Email}</td>
-                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Usertype}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Phone}</td>
+
+                                {/* <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Lastname}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Usertype}</td> */}
 
                                 <td>
                                   <div className="d-flex justify-content-center align-items-center">
@@ -242,10 +254,9 @@ const MainContent = (props) => {
                           </> :
                           <>
                             <th className="rounded-start ps-2">ID</th>
-                            <th className="">First Name</th>
-                            <th className="">Last Name</th>
+                            <th className="">Hostname</th>
                             <th className="">Email</th>
-                            <th className="">Type</th>
+                            <th className=""> Contact </th>
                             <th className="rounded-end">Action</th>
                           </>
                       }
@@ -279,11 +290,9 @@ const MainContent = (props) => {
                               <tr key={index}>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
-                                  data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Firstname}</td>
-                                <td className='text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Lastname}</td>
+                                  data-serviceid={element.ID} onClick={userDetailPage}>{element.Firstname +" "+ element.Lastname}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Email}</td>
-                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Usertype}</td>
-
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Phone}</td>
                                 <td>
                                 <div className="d-flex justify-content-center align-items-center">
                                     <button type="button" className="ms-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></button>
@@ -330,10 +339,9 @@ const MainContent = (props) => {
                           </> :
                           <>
                             <th className="rounded-start ps-2">ID</th>
-                            <th className="">First Name</th>
-                            <th className="">Last Name</th>
+                            <th className="">Hostname</th>
                             <th className="">Email</th>
-                            <th className="">Type</th>
+                            <th className=""> Contact </th>
                             <th className="rounded-end">Action</th>
                           </>
                       }
@@ -349,7 +357,6 @@ const MainContent = (props) => {
                       Object.keys(dataTableData).length > 0 && dataTableData.rejected.length > 0 ?
 
                         searchedService && searchedService != 'Users' ?
-
                           dataTableData.rejected.map((element, index) => {
                             return (
                               <tr key={index}>
@@ -371,11 +378,9 @@ const MainContent = (props) => {
                               <tr key={index}>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
-                                  data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Firstname}</td>
-                                <td className='text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Lastname}</td>
-                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Email}</td>
-                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Usertype}</td>
-
+                                  data-serviceid={element.ID} onClick={userDetailPage}>{element.Firstname +" " + element.Lastname}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Email}</td>                                
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Phone}</td>
                                 <td>
                                 <div className="d-flex justify-content-center align-items-center">
                                     <button type="button" className="ms-2 btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faCheck}></FontAwesomeIcon></button>
@@ -406,6 +411,10 @@ const MainContent = (props) => {
         </div>
         {/* end::Tables*/}
       </div >
+      
+      {!!showUserModal &&(
+        <UserComp selectedUserId={showUserModal} onModalClose={()=> setShowUserModal(false)} />
+      )}
     </div>
 
   )

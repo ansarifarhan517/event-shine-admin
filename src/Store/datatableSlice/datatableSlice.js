@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import fire, { db, auth } from "../../firebaseConfig/firebaseConfig";
+import { getUserDataByID, getServicesByHostID } from "../storeHelper";
 
 const dataTableSlice = createSlice({
     name: 'dataTableState',
     initialState: {
         dataTableData: {},
         searchedService: '',
+        //selectedVendor : false,
     },
     reducers: {
         setDataTableData(state, action) {
@@ -13,7 +15,10 @@ const dataTableSlice = createSlice({
         },
         setSearchedService(state, action) {
             state.searchedService = action.payload
-        }
+        },
+        // setSelectedVendor(state, action){        
+        //     state.selectedVendor = action.payload        
+        // },
     }
 })
 
@@ -24,20 +29,29 @@ export const getDataTableData = (serviceName) => {
         try {
 
             let dataTableData = []
-            const response = await db.collection(serviceName).get()
+            let  response  = [];
+
+            if(serviceName === "Users"){
+                response = await db.collection(serviceName).where("Usertype","==", "host").get();
+            }else{
+                response = await db.collection(serviceName).get()
+            }
+
             response.forEach(i => dataTableData.push(i.data()))
             let dataTableDatas = {
                 pending: [],
                 accepted: [],
                 rejected: []
             }
-            if (serviceName == 'Users') {
-                console.log(dataTableData);
-            }
+
+            // if (serviceName == 'Users') {
+            //     console.log(dataTableData);
+            // }
+
             dataTableData.map(i => {
                 let obj = {}
 
-                if (serviceName == 'Users') {
+                if (serviceName == 'Users') {                
                     obj.Email = i.Email
                     obj.Firstname = i.Firstname
                     obj.Lastname = i.Lastname
@@ -45,7 +59,6 @@ export const getDataTableData = (serviceName) => {
                     obj.Usertype = i.Usertype
                     obj.Active = i.Active
                     obj.ID = i.ID
-
                 }
                 else {
                     obj.City = i.City == 'Xtz2LLmd8w9QMOOHcM9C' ? 'Mumbai' : i.City == 'Amvl3PCMbn4wSjiEcxNT' ? 'Thane' : i.City == '8NmEc5YN82ShZw47NPCy' ? 'Thane' : ''
@@ -72,7 +85,8 @@ export const getDataTableData = (serviceName) => {
                 }
 
             })
-            console.log(dataTableDatas)
+            
+            //console.log(dataTableDatas)
             dispatch(dataTableSlice.actions.setDataTableData(dataTableDatas))
         }
         catch (error) {
@@ -81,6 +95,22 @@ export const getDataTableData = (serviceName) => {
 
     }
 }
+
+// export  const fetchUserData = (userId) => {
+//     return async (dispatch) => {
+//         try {        
+//            const dbRes = await getUserDataByID(userId);
+//            if(!dbRes)  return;
+           
+//            const allServices = await getServicesByHostID(userId);
+
+//            dispatch(dataTableSlice.actions.setSelectedVendor({...dbRes, Services: allServices}));           
+//         }
+//         catch (error) {
+//             console.log(error)
+//         }
+//     }
+// }
 
 export const dataTableActions = dataTableSlice.actions;
 export default dataTableSlice

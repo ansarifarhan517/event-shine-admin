@@ -32,3 +32,30 @@ export const getUserDataByID = async (id) => {
         console.log(err);
     }
 }
+
+export const getServicesByHostID = async(userId) => {
+    try {
+        let hostServices = {};
+
+        const allServices = await (await db.collection('Services').doc('services').get()).data();
+        
+        if(!allServices) return hostServices;
+        
+        for (const serviceName of allServices.services) {
+            const currentServices = await db.collection(serviceName).where('VendorID','==', userId).get();
+            
+            if(!currentServices.empty){
+                const serviceDocs = [];
+                currentServices.docs.forEach( doc =>{
+                    serviceDocs.push({ID : doc.id, ...doc.data()});
+                })
+
+                hostServices[serviceName] = serviceDocs;
+            }
+        }
+        
+        return hostServices;
+    } catch (err) {
+        console.log(err);
+    }
+}
