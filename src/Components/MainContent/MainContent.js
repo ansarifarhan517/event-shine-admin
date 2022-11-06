@@ -14,11 +14,10 @@ import UserComp from '../UserComp/UserComp'
 
 const MainContent = (props) => {
 
-  const dispatch        = useDispatch()
-  
-  const dataTableData   = useSelector(state => state.dataTableReducer.dataTableData)
+  const dispatch = useDispatch()
+
+  const dataTableData = useSelector(state => state.dataTableReducer.dataTableData)
   const searchedService = useSelector(state => state.dataTableReducer.searchedService)
-  
   const MySwal = withReactContent(Swal)
 
   const [showUserModal, setShowUserModal] = useState(false);
@@ -33,9 +32,9 @@ const MainContent = (props) => {
     }).then(async function (result) {
 
       if (result.value) {
-        let serviceName = searchedService == '' ? 'Venues' : searchedService
 
-        const response = await setServiceAcceptOrReject(e.target.value, e.target.dataset.serviceid, serviceName)
+        let serviceName = searchedService == '' ? 'Venues' : searchedService
+        const response = await setServiceAcceptOrReject(e.target.value, e.target.dataset.serviceid, serviceName,e.target.dataset.featured == 'Y' ? true : false)
         if (response) {
           MySwal.fire({
             icon: 'success',
@@ -48,18 +47,18 @@ const MainContent = (props) => {
       }
     })
   }
-  
+
   const openDetailServicePage = async (e) => {
     try {
       dispatch(sideBarActions.setSideBarLoader())
       let serviceName = searchedService == '' ? 'Venues' : searchedService
       let selectedData = {}, Images = []
       props.sideBarRef.current.style.right = '0%'
-
       Object.keys(dataTableData).map(key => {
         return dataTableData[key].map(element => {
           if (element.ID == e.target.dataset.serviceid) {
             selectedData = element
+            if (key == 'accepted') { dispatch(sideBarActions.setSelectedDataIsAccepted(true)) }
           }
         })
       })
@@ -80,15 +79,15 @@ const MainContent = (props) => {
     } catch (error) {
       console.log(error)
       Swal.fire({
-        icon : 'error',
-        titleText : 'Something went wrong',
-    });
+        icon: 'error',
+        titleText: 'Something went wrong',
+      });
     }
 
   }
 
-  const userDetailPage = async(e) => {
-    const userDocId =  e.target.dataset.serviceid
+  const userDetailPage = async (e) => {
+    const userDocId = e.target.dataset.serviceid
     setShowUserModal(userDocId);
   }
 
@@ -108,7 +107,7 @@ const MainContent = (props) => {
           <h3 className='card-title align-items-start flex-column'>
             <span className='fw-light fs-1 text-hover-primary '>{searchedService == '' ? 'Venues' : searchedService}</span>
           </h3>
-          <div className='card-toolbar'>
+          {searchedService !== 'FeaturedService' && <div className='card-toolbar'>
             <ul className='nav'>
               <li className='nav-item'>
                 <a
@@ -139,7 +138,7 @@ const MainContent = (props) => {
                 </a>
               </li>
             </ul>
-          </div>
+          </div>}
         </div>
         {/* end::Header */}
 
@@ -147,7 +146,7 @@ const MainContent = (props) => {
         <div className=' card-body py-3'>
           <div className='tab-content'>
             {/* begin::Tap pane pending starts */}
-            <div className='tab-pane fade show active' id='pending'>
+            {searchedService !== 'FeaturedService' && <div className='tab-pane fade show active' id='pending'>
               {/* begin::Table container */}
               <div className='table-responsive'>
                 {/* begin::Table */}
@@ -182,7 +181,7 @@ const MainContent = (props) => {
                   <tbody className=''>
                     {
                       Object.keys(dataTableData).length > 0 && dataTableData.pending.length > 0 ?
-                        searchedService == '' ||  searchedService != 'Users' ?
+                        searchedService == '' || searchedService != 'Users' ?
 
                           dataTableData.pending.map((element, index) => {
                             return (
@@ -206,7 +205,7 @@ const MainContent = (props) => {
                               <tr key={index}>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
-                                  data-serviceid={element.ID} onClick={userDetailPage}>{element.Firstname +" "+ element.Lastname}</td>
+                                  data-serviceid={element.ID} onClick={userDetailPage}>{element.Firstname + " " + element.Lastname}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Email}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Phone}</td>
 
@@ -215,7 +214,7 @@ const MainContent = (props) => {
 
                                 <td>
                                   <div className="d-flex justify-content-center align-items-center">
-                                   <button type="button" className="btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler}><FontAwesomeIcon icon={faCheck}></FontAwesomeIcon></button>
+                                    <button type="button" className="btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler}><FontAwesomeIcon icon={faCheck}></FontAwesomeIcon></button>
                                     <button type="button" className="mx-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon className="" icon={faTimes} /></button>
                                   </div>
                                 </td>
@@ -235,11 +234,11 @@ const MainContent = (props) => {
                 </table>
               </div>
               {/* end::Table */}
-            </div>
+            </div>}
             {/* end::Tap pane  pending ends*/}
 
             {/* begin::Tap pane Accepted */}
-            <div className='tab-pane fade' id='Accepted'>
+            {searchedService !== 'FeaturedService' && <div className='tab-pane fade' id='Accepted'>
               {/* begin::Table container */}
               <div className='table-responsive'>
                 {/* begin::Table */}
@@ -248,7 +247,7 @@ const MainContent = (props) => {
                   <thead className='text-center'>
                     <tr className="fw-bolder text-muted bg-light">
                       {
-                        searchedService == '' ||  searchedService != 'Users' ?
+                        searchedService == '' || searchedService != 'Users' ?
                           <>
                             <th className="rounded-start ps-2">ID</th>
                             <th className="">Title</th>
@@ -294,11 +293,11 @@ const MainContent = (props) => {
                               <tr key={index}>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
-                                  data-serviceid={element.ID} onClick={userDetailPage}>{element.Firstname +" "+ element.Lastname}</td>
+                                  data-serviceid={element.ID} onClick={userDetailPage}>{element.Firstname + " " + element.Lastname}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Email}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Phone}</td>
                                 <td>
-                                <div className="d-flex justify-content-center align-items-center">
+                                  <div className="d-flex justify-content-center align-items-center">
                                     <button type="button" className="ms-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></button>
                                   </div>
                                 </td>
@@ -318,13 +317,11 @@ const MainContent = (props) => {
                 </table>
               </div>
               {/* end::Table */}
-            </div>
+            </div>}
             {/* end::Tap pane Accepted */}
 
-
-
             {/* begin::Tap pane Rejected*/}
-            <div className='tab-pane fade' id='rejected'>
+            {searchedService !== 'FeaturedService' && <div className='tab-pane fade' id='rejected'>
               {/* begin::Table container */}
               <div className='table-responsive'>
                 {/* begin::Table */}
@@ -382,11 +379,11 @@ const MainContent = (props) => {
                               <tr key={index}>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
-                                  data-serviceid={element.ID} onClick={userDetailPage}>{element.Firstname +" " + element.Lastname}</td>
-                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Email}</td>                                
+                                  data-serviceid={element.ID} onClick={userDetailPage}>{element.Firstname + " " + element.Lastname}</td>
+                                <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Email}</td>
                                 <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Phone}</td>
                                 <td>
-                                <div className="d-flex justify-content-center align-items-center">
+                                  <div className="d-flex justify-content-center align-items-center">
                                     <button type="button" className="ms-2 btn btn-success btn-sm d-flex align-items-center" value="accept" data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faCheck}></FontAwesomeIcon></button>
                                   </div>
                                 </td>
@@ -407,17 +404,73 @@ const MainContent = (props) => {
                 </table>
               </div>
               {/* end::Table */}
-            </div>
+            </div>}
             {/* end::Tap pane Rejcted */}
-
-
           </div>
+          {/* begin::Table container */}
+          {
+            searchedService == 'FeaturedService' &&
+            <div className='table-responsive'>
+              {/* begin::Table */}
+              <table className='table table-row-dashed table-row-gray-200 align-middle gs-0 gy-4'>
+                {/* begin::Table head */}
+                <thead className='text-center'>
+                  <tr className="fw-bolder text-muted bg-light">
+                    {
+
+                      <>
+                        <th className="rounded-start ps-2">ID</th>
+                        <th className="">Title</th>
+                        <th className="">Address</th>
+                        <th className="">City</th>
+                        <th className="rounded-end">Action</th>
+                      </>
+                    }
+                  </tr>
+                </thead>
+                {/* end::Table head */}
+                {/* begin::Table body */}
+                <tbody>
+                  {
+                    Object.keys(dataTableData).length > 0 && dataTableData.data.length > 0 ?
+
+                      dataTableData.data.map((element, index) => {
+                        return (
+                          <tr key={index}>
+                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{index + 1}</td>
+                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6 cursor-pointer'
+                              data-serviceid={element.ID} onClick={openDetailServicePage}>{element.Title}</td>
+                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.Address}</td>
+                            <td className='text-center text-dark fw-bolder text-hover-primary mb-1 fs-6'>{element.City}</td>
+                            <td>
+                              <div className="d-flex justify-content-center align-items-center">
+                                <button type="button" className="ms-2 btn btn-danger btn-sm d-flex align-items-center" value="reject" data-featured='Y' data-serviceid={element.ID} onClick={serviceAcceptAndRejectHandler} ><FontAwesomeIcon icon={faTimes}></FontAwesomeIcon></button>
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      })
+
+                      :
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td className='text-dark fw-bolder text-hover-primary text-center fs-4'>*****No Records Found*****</td>
+
+                      </tr>
+                  }
+                </tbody>
+                {/* end::Table body */}
+              </table>
+            </div>
+          }
+          {/* end::Table */}
         </div>
         {/* end::Tables*/}
       </div >
-      
-      {!!showUserModal &&(
-        <UserComp selectedUserId={showUserModal} onModalClose={()=> setShowUserModal(false)} />
+
+      {!!showUserModal && (
+        <UserComp selectedUserId={showUserModal} onModalClose={() => setShowUserModal(false)} />
       )}
     </div>
 

@@ -5,7 +5,8 @@ const sideBarSlice = createSlice({
     name: 'sideBarState',
     initialState: {
         selectedData: {},
-        sideBarLoader: false
+        sideBarLoader: false,
+        selectedDataIsAccepted: false
     },
     reducers: {
         setSelectedData(state, action) {
@@ -13,6 +14,9 @@ const sideBarSlice = createSlice({
         },
         setSideBarLoader(state) {
             state.sideBarLoader = !state.sideBarLoader
+        },
+        setSelectedDataIsAccepted(state,action) {
+            state.selectedDataIsAccepted = action.payload
         }
 
     }

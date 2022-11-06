@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import fire, { db, auth } from "../../firebaseConfig/firebaseConfig";
-import { getUserDataByID, getServicesByHostID } from "../storeHelper";
+import { getUserDataByID, getServicesByHostID, getServiceByID } from "../storeHelper";
 
 const dataTableSlice = createSlice({
     name: 'dataTableState',
@@ -28,12 +28,11 @@ export const getDataTableData = (serviceName) => {
     return async (dispatch) => {
         try {
 
-            let dataTableData = []
-            let  response  = [];
-
-            if(serviceName === "Users"){
-                response = await db.collection(serviceName).where("Usertype","==", "host").get();
-            }else{
+            let dataTableData = [], response = [], temp = []
+            if (serviceName === "Users") {
+                response = await db.collection(serviceName).where("Usertype", "==", "host").get();
+            }
+            else {
                 response = await db.collection(serviceName).get()
             }
 
@@ -41,7 +40,8 @@ export const getDataTableData = (serviceName) => {
             let dataTableDatas = {
                 pending: [],
                 accepted: [],
-                rejected: []
+                rejected: [],
+                data: []
             }
 
             // if (serviceName == 'Users') {
@@ -50,8 +50,7 @@ export const getDataTableData = (serviceName) => {
 
             dataTableData.map(i => {
                 let obj = {}
-
-                if (serviceName == 'Users') {                
+                if (serviceName == 'Users') {
                     obj.Email = i.Email
                     obj.Firstname = i.Firstname
                     obj.Lastname = i.Lastname
@@ -59,6 +58,10 @@ export const getDataTableData = (serviceName) => {
                     obj.Usertype = i.Usertype
                     obj.Active = i.Active
                     obj.ID = i.ID
+                }
+                else if (serviceName == 'FeaturedService') {
+                    obj.serviceId = i.serviceId
+                    obj.serviceName = i.serviceName
                 }
                 else {
                     obj.City = i.City == 'Xtz2LLmd8w9QMOOHcM9C' ? 'Mumbai' : i.City == 'Amvl3PCMbn4wSjiEcxNT' ? 'Thane' : i.City == '8NmEc5YN82ShZw47NPCy' ? 'Thane' : ''
@@ -83,10 +86,21 @@ export const getDataTableData = (serviceName) => {
                 else if (i.Active === 'R') {
                     dataTableDatas.rejected.push(obj)
                 }
+                else {
+                    temp.push(obj)
+                }
 
             })
-            
-            //console.log(dataTableDatas)
+            if (serviceName == 'FeaturedService') {
+                let promiseArray = temp.map(async (i) => {
+                    return getServiceByID(i.serviceName, i.serviceId)
+                })
+                Promise.all(promiseArray).then(values => {
+                    dataTableDatas.data = values
+                    dispatch(dataTableSlice.actions.setDataTableData(dataTableDatas))
+                })
+                return
+            }
             dispatch(dataTableSlice.actions.setDataTableData(dataTableDatas))
         }
         catch (error) {
@@ -101,7 +115,7 @@ export const getDataTableData = (serviceName) => {
 //         try {        
 //            const dbRes = await getUserDataByID(userId);
 //            if(!dbRes)  return;
-           
+
 //            const allServices = await getServicesByHostID(userId);
 
 //            dispatch(dataTableSlice.actions.setSelectedVendor({...dbRes, Services: allServices}));           

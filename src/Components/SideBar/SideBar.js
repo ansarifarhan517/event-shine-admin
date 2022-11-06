@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import { setServiceAcceptOrReject } from '../../Store/storeHelper'
+import { getFeaturesService, setFeaturedService, setServiceAcceptOrReject } from '../../Store/storeHelper'
 import { getDataTableData } from '../../Store/datatableSlice/datatableSlice'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -16,6 +16,7 @@ const SideBar = (props) => {
     const selectedData = useSelector(state => state.sideBarReducer.selectedData)
     const sideBarLoader = useSelector(state => state.sideBarReducer.sideBarLoader)
     const searchedService = useSelector(state => state.dataTableReducer.searchedService)
+    const selectedDataisAccepted = useSelector(state => state.sideBarReducer.selectedDataIsAccepted)
     const MySwal = withReactContent(Swal)
     const dispatch = useDispatch()
 
@@ -38,6 +39,7 @@ const SideBar = (props) => {
             //console.log('xl-laptop')
             props.sideBarRef.current.style.right = '-70%'
         }
+        dispatch(sideBarActions.setSelectedDataIsAccepted(false))
     }
     const serviceAcceptAndRejectHandler = (e) => {
         MySwal.fire({
@@ -63,13 +65,46 @@ const SideBar = (props) => {
             }
         })
     }
+
+
+    const addServiceToFeatured = useCallback((e) => {
+        MySwal.fire({
+            title: "Are you sure?",
+            text: "You wont be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "yes,do it"
+        }).then(async function (result) {
+            if (result.value) {
+                let obj = {}
+                obj.serviceId = e.target.dataset.serviceid
+                obj.serviceName = searchedService == '' ? 'Venues' : searchedService
+                let result = await getFeaturesService(e.target.dataset.serviceid)
+                if (result == true) {
+                    setFeaturedService(obj)
+                }
+                else {
+                    MySwal.fire({
+                        icon: 'error',
+                        title: result,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                }
+            }
+        })
+
+
+    }, [searchedService]);
+
     useEffect(() => {
         if (Object.keys(selectedData).length > 0) {
-            //console.log('hi')
             dispatch(sideBarActions.setSideBarLoader())
         }
     }, [selectedData])
-    
+
+
     return (
 
         <div className='sideBar h-100' ref={props.sideBarRef} >
@@ -92,8 +127,6 @@ const SideBar = (props) => {
                                             navigation={true}
                                             modules={[Navigation, Autoplay, EffectCoverflow]}
                                             slidesPerView={1}
-                                            onSlideChange={() => console.log('slide change')}
-                                            onSwiper={(swiper) => console.log(swiper)}
                                             className="mySwiper"
                                         >
                                             {selectedData.ImagesURL.map((images, index) => {
@@ -151,6 +184,13 @@ const SideBar = (props) => {
                                             <span className='text-gray-700 fs-6 fw-light text-hover-info'>  {selectedData.Contact}  </span>
                                         </div>
                                     </div>
+                                    {selectedDataisAccepted &&
+                                        <div className="ms-1 mb-3 fs-6">
+                                            <div className='fw-bold'> Add Feature Service :
+                                                <button className='ms-2 btn btn-primary btn-sm' onClick={addServiceToFeatured} data-serviceid={selectedData.ID}>Add</button>
+                                            </div>
+                                        </div>
+                                    }
                                     <div className="ms-1 mb-3 fs-6">
                                         <div className='fw-bold'> Action :
                                             <button className={`ms-2 btn ${selectedData.Active == 'Y' ? 'btn-danger' : 'btn-success'} btn-sm`}

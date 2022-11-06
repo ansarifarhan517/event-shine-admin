@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { dataTableActions } from '../../Store/datatableSlice/datatableSlice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBowlFood, faHotel, faCamera, faFan, faPalette, faHandSparkles, faUser, faUsersRectangle } from '@fortawesome/free-solid-svg-icons'
+import { faBowlFood, faHotel, faCamera, faFan, faPalette, faHandSparkles, faUser, faUsersRectangle, faWandSparkles } from '@fortawesome/free-solid-svg-icons'
 import { Accordion } from 'react-bootstrap'
 
 import './LeftPanel.css'
@@ -15,7 +15,9 @@ const LeftPanel = () => {
         { name: 'Decorators', icon: faFan },
         { name: 'Beauticians', icon: faPalette },
         { name: 'Mehndi-artist', icon: faHandSparkles },
-        { name: 'Users', icon: faUsersRectangle }
+        { name: 'Users', icon: faUsersRectangle },
+        { name: 'FeaturedService', icon: faWandSparkles }
+
     ]);
 
     const dispatch = useDispatch()
@@ -41,13 +43,13 @@ const LeftPanel = () => {
 
                 <Accordion defaultActiveKey="0" flush >
                     <Accordion.Item eventKey="0" className="menu-item mt-3">
-                        <Accordion.Header className="menu-content pb-2 text-hover-dark" > 
+                        <Accordion.Header className="menu-content pb-2 text-hover-dark" >
                             <span className="menu-section text-muted text-uppercase fs-6  ls-1"> Services </span>
                         </Accordion.Header>
-                        
+
                         <Accordion.Body>
                             {services.map((service, index) => {
-                                if(service.name !== "Users"){
+                                if (service.name !== "Users" && service.name !== 'FeaturedService') {
                                     return (
                                         <div className={`menu-item ${service.name == 'Venues' ? 'clicked' : ''}`} key={index} onClick={() => servicesClickHandler(service.name)}
                                             ref={menuItem.current[index]} id={service.name}>
@@ -67,13 +69,13 @@ const LeftPanel = () => {
                     </Accordion.Item>
 
                     <Accordion.Item eventKey="1" className="menu-item mt-3">
-                        <Accordion.Header className="menu-content pb-2 text-hover-dark" > 
+                        <Accordion.Header className="menu-content pb-2 text-hover-dark" >
                             <span className="menu-section text-muted text-uppercase fs-6  ls-1"> Profiles </span>
                         </Accordion.Header>
-                        
+
                         <Accordion.Body>
                             {services.map((service, index) => {
-                                if(service.name === "Users"){
+                                if (service.name === "Users" || service.name === 'FeaturedService') {
                                     return (
                                         <div className={`menu-item ${service.name == 'Venues' ? 'clicked' : ''}`} key={index} onClick={() => servicesClickHandler(service.name)}
                                             ref={menuItem.current[index]} id={service.name}>
@@ -83,12 +85,12 @@ const LeftPanel = () => {
                                                         <FontAwesomeIcon className='iconColor' icon={service.icon} size='xl' />
                                                     </span>
                                                 </span>
-                                                <span className="menu-title text-blue"> All Users </span>
+                                                <span className="menu-title text-blue">{service.name}  </span>
                                                 {/* <span className="menu-title text-blue">{service.name}</span> */}
                                             </div>
                                         </div>
                                     )
-                                } 
+                                }
                             })}
                         </Accordion.Body>
                     </Accordion.Item>
