@@ -66,14 +66,12 @@ const SideBar = (props) => {
         })
     }
 
-
     const addServiceToFeatured = useCallback((e) => {
         MySwal.fire({
-            title: "Are you sure?",
-            text: "You wont be able to revert this!",
+            title: "Are you sure?",           
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "yes,do it"
+            confirmButtonText: "Yes"
         }).then(async function (result) {
             if (result.value) {
                 let obj = {}
@@ -94,8 +92,6 @@ const SideBar = (props) => {
                 }
             }
         })
-
-
     }, [searchedService]);
 
     useEffect(() => {
@@ -183,14 +179,7 @@ const SideBar = (props) => {
                                         <div className='fw-bold'> Contact :
                                             <span className='text-gray-700 fs-6 fw-light text-hover-info'>  {selectedData.Contact}  </span>
                                         </div>
-                                    </div>
-                                    {selectedDataisAccepted &&
-                                        <div className="ms-1 mb-3 fs-6">
-                                            <div className='fw-bold'> Add Feature Service :
-                                                <button className='ms-2 btn btn-primary btn-sm' onClick={addServiceToFeatured} data-serviceid={selectedData.ID}>Add</button>
-                                            </div>
-                                        </div>
-                                    }
+                                    </div>                                   
                                     <div className="ms-1 mb-3 fs-6">
                                         <div className='fw-bold'> Action :
                                             <button className={`ms-2 btn ${selectedData.Active == 'Y' ? 'btn-danger' : 'btn-success'} btn-sm`}
@@ -199,7 +188,14 @@ const SideBar = (props) => {
                                                 onClick={serviceAcceptAndRejectHandler}>{selectedData.Active == 'Y' ? 'Reject' : 'Accept'}</button>
                                         </div>
                                     </div>
-
+                                    
+                                    {selectedDataisAccepted &&
+                                        <div className="ms-1 mb-3 fs-6">
+                                            <div className='fw-bold'> Add to featured:
+                                                <button className='ms-2 btn btn-primary btn-sm' onClick={addServiceToFeatured} data-serviceid={selectedData.ID}>Add</button>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         }
